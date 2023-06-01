@@ -20,3 +20,9 @@ func (f Frame) Location() (function, file string, line int) {
 	}
 	return fr.Function, fr.File, fr.Line
 }
+
+func caller(skip int) Frame {
+	var s Frame
+	runtime.Callers(skip+1, s.frames[:])
+	return s
+}
