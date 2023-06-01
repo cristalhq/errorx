@@ -39,6 +39,22 @@ func ExampleNewf() {
 	// this is the error, code: 123
 }
 
+func ExampleNewf_withW() {
+	err := errorx.New("this is the error")
+	errFull := errorx.Newf("caused by: %w", err)
+
+	if err == errFull {
+		panic("should be different")
+	}
+
+	fmt.Println(err)
+	fmt.Println(errFull)
+
+	// Output:
+	// this is the error
+	// caused by: this is the error
+}
+
 func ExampleIsAny() {
 	err := os.ErrPermission
 

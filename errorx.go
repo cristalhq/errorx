@@ -17,13 +17,14 @@ func New(text string) error {
 }
 
 func Newf(format string, a ...any) error {
-	if IsTracingEnabled() && !strings.Contains(format, "%w") {
-		return &errorString{
-			s:     fmt.Sprintf(format, a...),
-			frame: caller(1),
-		}
+	// NOTE: go vet printf check doesn't understand inverse expression.
+	if !IsTracingEnabled() || strings.Contains(format, "%w") {
+		return fmt.Errorf(format, a...)
 	}
-	return fmt.Errorf(format, a...)
+	return &errorString{
+		s:     fmt.Sprintf(format, a...),
+		frame: caller(1),
+	}
 }
 
 // Is is just [errors.Is].
