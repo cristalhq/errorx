@@ -37,6 +37,11 @@ func As(err error, target any) bool {
 	return errors.As(err, target)
 }
 
+// Unwrap is just [errors.Unwrap].
+func Unwrap(err error) error {
+	return errors.Unwrap(err)
+}
+
 func IsAny(err, target error, targets ...error) bool {
 	if errors.Is(err, target) {
 		return true
