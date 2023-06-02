@@ -59,3 +59,13 @@ type errorString struct {
 func (e *errorString) Error() string {
 	return e.s
 }
+
+func (e *errorString) Format(s fmt.State, v rune) {
+	FormatError(e, s, v)
+}
+
+func (e *errorString) FormatError(p Printer) (next error) {
+	p.Print(e.s)
+	e.frame.Format(p)
+	return nil
+}
