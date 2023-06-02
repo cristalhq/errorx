@@ -33,6 +33,9 @@ func (f Frame) Format(p Printer) {
 	}
 }
 
+// Caller returns a Frame that describes a frame on the caller's stack.
+// The argument skip is the number of frames to skip over.
+// Caller(0) returns the frame for the caller of Caller.
 func caller(skip int) Frame {
 	var s Frame
 	runtime.Callers(skip+1, s.frames[:])

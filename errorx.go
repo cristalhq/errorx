@@ -6,6 +6,10 @@ import (
 	"strings"
 )
 
+// Newf returns an error according to a format specifier and param.
+// Each call to New returns a distinct error value even if the text is identical.
+//
+// If tracing is enabled then stacktrace is attached to the returned error.
 func Newf(format string, a ...any) error {
 	// NOTE: go vet printf check doesn't understand inverse expression.
 	if !IsTracingEnabled() || strings.Contains(format, "%w") {
@@ -32,11 +36,19 @@ func As(err error, target any) bool {
 	return errors.As(err, target)
 }
 
+// Into is type-safe alternative to [errorx.As].
+func Into[T error](err error) (T, bool) {
+	var dst T
+	ok := As(err, &dst)
+	return dst, ok
+}
+
 // Unwrap is just [errors.Unwrap].
 func Unwrap(err error) error {
 	return errors.Unwrap(err)
 }
 
+// IsAny is just a multiple [errors.Is] calls.
 func IsAny(err, target error, targets ...error) bool {
 	if errors.Is(err, target) {
 		return true
@@ -48,6 +60,14 @@ func IsAny(err, target error, targets ...error) bool {
 		}
 	}
 	return false
+}
+
+// Must returns value or panic if the error is non-nil.
+func Must[T any](v T, err error) T {
+	if err != nil {
+		panic(err)
+	}
+	return v
 }
 
 // errorString same as [errors.errorString] but with a frame field.
