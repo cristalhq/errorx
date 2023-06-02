@@ -6,23 +6,18 @@ import (
 	"strings"
 )
 
-func New(text string) error {
-	if IsTracingEnabled() {
-		return &errorString{
-			s:     text,
-			frame: caller(1),
-		}
-	}
-	return errors.New(text)
-}
-
 func Newf(format string, a ...any) error {
 	// NOTE: go vet printf check doesn't understand inverse expression.
 	if !IsTracingEnabled() || strings.Contains(format, "%w") {
 		return fmt.Errorf(format, a...)
 	}
+
+	msg := format
+	if a != nil {
+		msg = fmt.Sprintf(format, a...)
+	}
 	return &errorString{
-		s:     fmt.Sprintf(format, a...),
+		s:     msg,
 		frame: caller(1),
 	}
 }

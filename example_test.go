@@ -7,52 +7,26 @@ import (
 	"github.com/cristalhq/errorx"
 )
 
-func ExampleNew() {
-	err := errorx.New("this is the error")
-	err2 := errorx.New("this is the error")
-
-	if err == err2 {
-		panic("should be different")
-	}
-
-	fmt.Println(err)
-	fmt.Println(err2)
-
-	// Output:
-	// this is the error
-	// this is the error
-}
-
 func ExampleNewf() {
-	err := errorx.Newf("this is the error, code: %d", 123)
-	err2 := errorx.Newf("this is the error, code: %d", 123)
+	err := errorx.Newf("this is the error")
+	err2 := errorx.Newf("this is the error, with code: %d", 123)
+	err3 := errorx.Newf("this is the error, with code: %d", 123)
+	errFull := errorx.Newf("caused by: %w", err3)
 
-	if err == err2 {
+	if err2 == err3 {
 		panic("should be different")
 	}
 
 	fmt.Println(err)
 	fmt.Println(err2)
-
-	// Output:
-	// this is the error, code: 123
-	// this is the error, code: 123
-}
-
-func ExampleNewf_withW() {
-	err := errorx.New("this is the error")
-	errFull := errorx.Newf("caused by: %w", err)
-
-	if err == errFull {
-		panic("should be different")
-	}
-
-	fmt.Println(err)
+	fmt.Println(err3)
 	fmt.Println(errFull)
 
 	// Output:
 	// this is the error
-	// caused by: this is the error
+	// this is the error, with code: 123
+	// this is the error, with code: 123
+	// caused by: this is the error, with code: 123
 }
 
 func ExampleIsAny() {
