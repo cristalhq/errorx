@@ -8,7 +8,7 @@ func Trace(err error) error {
 	}
 
 	frame := Frame{}
-	if IsTracingEnabled() {
+	if Tracing() {
 		frame = caller(1)
 	}
 	return &wrapError{
@@ -23,7 +23,7 @@ func Wrapf(err error, format string, a ...any) error {
 	}
 
 	frame := Frame{}
-	if IsTracingEnabled() {
+	if Tracing() {
 		frame = caller(1)
 	}
 

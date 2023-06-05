@@ -12,7 +12,7 @@ import (
 // If tracing is enabled then stacktrace is attached to the returned error.
 func Newf(format string, a ...any) error {
 	// NOTE: go vet printf check doesn't understand inverse expression.
-	if !IsTracingEnabled() || strings.Contains(format, "%w") {
+	if !Tracing() || strings.Contains(format, "%w") {
 		return fmt.Errorf(format, a...)
 	}
 
