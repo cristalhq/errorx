@@ -30,6 +30,19 @@ go get github.com/cristalhq/errorx
 ## Example
 
 ```go
+err := errorx.Newf("this is the error")
+if err != nil {
+	return errorx.Wrapf(err, "something happened")
+}
+
+errAt := errorx.Newf("happened at: %s", time.Now())
+if errAt != nil {
+	return errorx.Trace(err)
+}
+
+if errorx.Tracing() {
+	println("error tracing is enabled")
+}
 ```
 
 See examples: [example_test.go](example_test.go).
