@@ -3,9 +3,29 @@ package errorx_test
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/cristalhq/errorx"
 )
+
+func Example() {
+	func() error {
+		err := errorx.Newf("this is the error")
+		if err != nil {
+			return errorx.Wrapf(err, "something happened")
+		}
+
+		errAt := errorx.Newf("happened at: %s", time.Now())
+		if errAt != nil {
+			return errorx.Trace(err)
+		}
+
+		if errorx.Tracing() {
+			println("error tracing is enabled")
+		}
+		return nil
+	}()
+}
 
 func ExampleNewf() {
 	err := errorx.Newf("this is the error")
