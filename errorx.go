@@ -48,6 +48,22 @@ func Unwrap(err error) error {
 	return errors.Unwrap(err)
 }
 
+// UnwrapMulti is just [errors.Unwrap] for errors created via [errors.Join].
+// Returns slice with 1 element if a regular error is passed.
+func UnwrapMulti(err error) []error {
+	// multiError represents error created by [errors.Join].
+	// There is no way to unwrap it without casting to this interface.
+	type multiError interface {
+		Unwrap() []error
+	}
+
+	errs, ok := err.(multiError)
+	if ok {
+		return errs.Unwrap()
+	}
+	return []error{err}
+}
+
 // IsAny is just a multiple [errors.Is] calls.
 func IsAny(err, target error, targets ...error) bool {
 	if errors.Is(err, target) {
