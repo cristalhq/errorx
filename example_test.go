@@ -1,6 +1,7 @@
 package errorx_test
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -9,7 +10,7 @@ import (
 )
 
 func Example() {
-	func() error {
+	err := func() error {
 		err := errorx.Newf("this is the error")
 		if err != nil {
 			return errorx.Wrapf(err, "something happened")
@@ -17,7 +18,7 @@ func Example() {
 
 		errAt := errorx.Newf("happened at: %s", time.Now())
 		if errAt != nil {
-			return errorx.Trace(err)
+			return errorx.Trace(errAt)
 		}
 
 		if errorx.Tracing() {
@@ -25,6 +26,11 @@ func Example() {
 		}
 		return nil
 	}()
+
+	fmt.Println(err.Error())
+
+	// Output:
+	// something happened: this is the error
 }
 
 func ExampleNewf() {
@@ -49,13 +55,50 @@ func ExampleNewf() {
 	// caused by: this is the error, with code: 123
 }
 
-func ExampleIsAny() {
+func ExampleTrace() {
+	errorx.EnableTrace()
+	defer errorx.DisableTrace()
+
+	err := errors.New("root error")
+	err2 := errorx.Trace(err)
+
+	_ = err2
+
+	// Output:
+}
+
+func ExampleWrapf() {
+	// Output:
+}
+
+func ExampleIs() {
 	err := os.ErrPermission
 
-	if errorx.IsAny(err, os.ErrNotExist, os.ErrPermission) {
+	if errorx.Is(err, os.ErrNotExist) {
+		panic("not this case")
+	}
+
+	if errorx.Is(err, os.ErrNotExist, os.ErrPermission) {
 		fmt.Println("it's not DNS")
+	}
+
+	if errorx.Is(err, os.ErrPermission) {
+		fmt.Println("oh no it's permissions")
 	}
 
 	// Output:
 	// it's not DNS
+	// oh no it's permissions
+}
+
+func ExampleAs() {
+}
+
+func ExampleInto() {
+}
+
+func ExampleUnwrap() {
+}
+
+func Example_multiErrors() {
 }
